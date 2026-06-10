@@ -108,7 +108,7 @@ The application will run at:
 
 ## Author
 
-**Sooraj**
+**Sooraj M Suresh**
 
 ## License
 
