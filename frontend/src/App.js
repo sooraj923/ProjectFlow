@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Tasks from "./pages/Tasks";
 import Navbar from "./components/Navbar";
 import Projects from "./pages/Projects";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 
@@ -33,30 +34,43 @@ function Layout() {
         }
       >
         <Routes>
-          <Route
-            path="/"
-            element={<Login />}
-          />
+  <Route
+    path="/"
+    element={<Login />}
+  />
 
-          <Route
-            path="/register"
-            element={<Register />}
-          />
+  <Route
+    path="/register"
+    element={<Register />}
+  />
 
-          <Route
-            path="/dashboard"
-            element={<Dashboard />}
-          />
+  <Route
+    path="/dashboard"
+    element={
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    }
+  />
 
-          <Route
-            path="/tasks"
-            element={<Tasks />}
-          />
-          <Route
-  path="/projects"
-  element={<Projects />}
-/>
-        </Routes>
+  <Route
+    path="/tasks"
+    element={
+      <ProtectedRoute>
+        <Tasks />
+      </ProtectedRoute>
+    }
+  />
+
+  <Route
+    path="/projects"
+    element={
+      <ProtectedRoute>
+        <Projects />
+      </ProtectedRoute>
+    }
+  />
+</Routes>
       </div>
     </>
   );

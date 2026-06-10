@@ -3,148 +3,239 @@ import { Link } from "react-router-dom";
 import api from "../services/api";
 
 function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const [name, setName] = useState("");
+const [email, setEmail] = useState("");
+const [password, setPassword] =
+useState("");
+const [confirmPassword,
+setConfirmPassword] =
+useState("");
 
-  const handleRegister = async () => {
-    try {
-      await api.post("/auth/register", {
-        name,
-        email,
-        password
-      });
+const [error, setError] =
+useState("");
 
-      alert("Registration Successful");
+const [success, setSuccess] =
+useState("");
 
-      setName("");
-      setEmail("");
-      setPassword("");
+const handleRegister = async () => {
+setError("");
+setSuccess("");
 
-    } catch (error) {
-      console.log(error);
-      alert("Registration Failed");
-    }
-  };
+if (!name.trim()) {
+  setError("Name is required");
+  return;
+}
 
-  return (
-    <div
+if (name.length < 3) {
+  setError(
+    "Name must be at least 3 characters"
+  );
+  return;
+}
+
+const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(email)) {
+  setError(
+    "Please enter a valid email"
+  );
+  return;
+}
+
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+if (!passwordRegex.test(password)) {
+  setError(
+    "Password must contain uppercase, lowercase, number and special character"
+  );
+  return;
+}
+
+if (
+  password !== confirmPassword
+) {
+  setError(
+    "Passwords do not match"
+  );
+  return;
+}
+
+try {
+  await api.post("/auth/register", {
+    name,
+    email,
+    password
+  });
+
+  setSuccess(
+  "Registration successful. Redirecting..."
+);
+
+setTimeout(() => {
+  window.location.href = "/";
+}, 2000);
+
+  setName("");
+  setEmail("");
+  setPassword("");
+  setConfirmPassword("");
+} catch (error) {
+  setError(
+    "Registration failed"
+  );
+}
+
+};
+
+return (
+<div
+style={{
+minHeight: "100vh",
+display: "flex",
+justifyContent: "center",
+alignItems: "center",
+background:
+"linear-gradient(135deg,#0f172a,#1e293b)"
+}}
+>
+<div
+style={{
+width: "420px",
+background: "white",
+padding: "35px",
+borderRadius: "20px",
+boxShadow:
+"0 20px 45px rgba(0,0,0,0.12)"
+}}
+>
+<h1
+style={{
+textAlign: "center",
+marginBottom: "10px"
+}}
+>
+ProjectFlow </h1>
+
+    <p
       style={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background:
-          "linear-gradient(135deg,#2563eb,#1e40af)"
+        textAlign: "center",
+        color: "#64748b",
+        marginBottom: "30px"
       }}
     >
-      <div
+      Create your account
+    </p>
+
+    <label>Full Name</label>
+    <div style={{ height: "8px" }} />
+
+    <input
+      type="text"
+      value={name}
+      placeholder="Enter your name"
+      onChange={(e) =>
+        setName(e.target.value)
+      }
+    />
+
+    <div style={{ height: "16px" }} />
+
+    <label>Email Address</label>
+    <div style={{ height: "8px" }} />
+
+    <input
+      type="email"
+      value={email}
+      placeholder="Enter your email"
+      onChange={(e) =>
+        setEmail(e.target.value)
+      }
+    />
+
+    <div style={{ height: "16px" }} />
+
+    <label>Password</label>
+    <div style={{ height: "8px" }} />
+
+    <input
+      type="password"
+      value={password}
+      placeholder="Create password"
+      onChange={(e) =>
+        setPassword(e.target.value)
+      }
+    />
+
+    <div style={{ height: "16px" }} />
+
+    <label>Confirm Password</label>
+    <div style={{ height: "8px" }} />
+
+    <input
+      type="password"
+      value={confirmPassword}
+      placeholder="Confirm password"
+      onChange={(e) =>
+        setConfirmPassword(
+          e.target.value
+        )
+      }
+    />
+
+    {error && (
+      <p
         style={{
-          background: "white",
-          padding: "40px",
-          width: "400px",
-          borderRadius: "15px",
-          boxShadow:
-            "0 10px 25px rgba(0,0,0,0.2)"
+          color: "#dc2626",
+          marginTop: "15px",
+          fontSize: "14px"
         }}
       >
-        <h1
-          style={{
-            textAlign: "center",
-            marginBottom: "10px"
-          }}
-        >
-          ProjectFlow
-        </h1>
+        {error}
+      </p>
+    )}
 
-        <p
-          style={{
-            textAlign: "center",
-            color: "gray",
-            marginBottom: "30px"
-          }}
-        >
-          Create Your Account
-        </p>
+    {success && (
+      <p
+        style={{
+          color: "#16a34a",
+          marginTop: "15px",
+          fontSize: "14px"
+        }}
+      >
+        {success}
+      </p>
+    )}
 
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) =>
-            setName(e.target.value)
-          }
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            borderRadius: "8px",
-            border: "1px solid #ccc"
-          }}
-        />
+    <div style={{ height: "20px" }} />
 
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            borderRadius: "8px",
-            border: "1px solid #ccc"
-          }}
-        />
+    <button
+      onClick={handleRegister}
+      style={{
+        width: "100%",
+        padding: "14px",
+        fontWeight: "600"
+      }}
+    >
+      Register
+    </button>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "20px",
-            borderRadius: "8px",
-            border: "1px solid #ccc"
-          }}
-        />
+    <p
+      style={{
+        textAlign: "center",
+        marginTop: "20px"
+      }}
+    >
+      Already have an account?{" "}
+      <Link to="/">
+        Login
+      </Link>
+    </p>
+  </div>
+</div>
 
-        <button
-          onClick={handleRegister}
-          style={{
-            width: "100%",
-            padding: "12px",
-            background: "#2563eb",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontSize: "16px"
-          }}
-        >
-          Register
-        </button>
-
-        <p
-          style={{
-            textAlign: "center",
-            marginTop: "20px"
-          }}
-        >
-          Already have an account?{" "}
-          <Link to="/">
-            Login
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
+);
 }
 
 export default Register;

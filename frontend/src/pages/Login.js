@@ -5,53 +5,82 @@ import { useNavigate, Link } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    setError("");
+
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required");
+      return;
+    }
+
     try {
       const res = await api.post("/auth/login", {
         email,
         password
       });
+      localStorage.setItem(
+  "userEmail",
+  res.data.user.email
+);
 
       localStorage.setItem(
-        "token",
-        res.data.token
-      );
+  "token",
+  res.data.token
+);
 
-      navigate("/dashboard");
+localStorage.setItem(
+  "userName",
+  res.data.user.name
+);
 
+navigate("/dashboard");
     } catch (error) {
-      console.log(error);
-      alert("Login Failed");
+      setError("Invalid email or password");
     }
   };
 
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         background:
-          "linear-gradient(135deg,#2563eb,#1e40af)"
+          "linear-gradient(135deg, #0f172a, #1e293b)"
       }}
     >
       <div
         style={{
-          background: "white",
-          padding: "40px",
-          width: "400px",
-          borderRadius: "15px",
+          width: "420px",
+          background: "#ffffff",
+          padding: "35px",
+          borderRadius: "20px",
           boxShadow:
-            "0 10px 25px rgba(0,0,0,0.2)"
+            "0 20px 45px rgba(0,0,0,0.12)"
         }}
       >
         <h1
           style={{
             textAlign: "center",
+            color: "#0f172a",
             marginBottom: "10px"
           }}
         >
@@ -61,65 +90,95 @@ function Login() {
         <p
           style={{
             textAlign: "center",
-            color: "gray",
+            color: "#64748b",
             marginBottom: "30px"
           }}
         >
-          Project Management System
+          Sign in to continue
         </p>
 
-        <input
-          type="email"
+        <label
+  style={{
+    fontSize: "14px",
+    fontWeight: "500",
+    color: "#334155"
+  }}
+>
+  Email Address
+</label>
+
+<div style={{ height: "8px" }} />
+
+<input
+  type="email"
+          
           placeholder="Email Address"
           value={email}
           onChange={(e) =>
             setEmail(e.target.value)
           }
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            borderRadius: "8px",
-            border: "1px solid #ccc"
-          }}
         />
 
-        <input
-          type="password"
+        <br />
+        <br />
+
+        <label
+  style={{
+    fontSize: "14px",
+    fontWeight: "500",
+    color: "#334155"
+  }}
+>
+  Password
+</label>
+
+<div style={{ height: "8px" }} />
+
+<input
+  type="password"
           placeholder="Password"
           value={password}
           onChange={(e) =>
             setPassword(e.target.value)
           }
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "20px",
-            borderRadius: "8px",
-            border: "1px solid #ccc"
-          }}
         />
 
-        <button
-          onClick={handleLogin}
-          style={{
-            width: "100%",
-            padding: "12px",
-            background: "#2563eb",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontSize: "16px"
-          }}
-        >
+        {error && (
+  <p
+    style={{
+      color: "#dc2626",
+      fontSize: "14px",
+      marginTop: "12px",
+      marginBottom: "15px"
+    }}
+  >
+    {error}
+  </p>
+)}
+
+<div
+  style={{
+    height: "15px"
+  }}
+></div>
+
+<button
+  onClick={handleLogin}
+  style={{
+    width: "100%",
+    padding: "14px",
+    fontSize: "15px",
+    fontWeight: "600"
+  }}
+>
           Login
         </button>
 
         <p
           style={{
             textAlign: "center",
-            marginTop: "20px"
+            marginTop: "20px",
+            color: "#475569"
           }}
         >
           Don't have an account?{" "}
